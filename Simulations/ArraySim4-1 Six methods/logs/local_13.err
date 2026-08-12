@@ -1,0 +1,5 @@
+[task 13/27] tau=3  beta_trt=-0.7  confounding=medium (x1)
+  beta_init = int=-3.000, x1=0.800, x2=-0.300, L1=0.500, L2=0.400
+[task 13] truth: RD=-0.0948 RR=0.8883 OR=0.5456 RMSTd=2.2044
+[task 13] running 100 reps on 8 cores
+[task 13] wrote 4800 rows -> results/res_task_013.rds

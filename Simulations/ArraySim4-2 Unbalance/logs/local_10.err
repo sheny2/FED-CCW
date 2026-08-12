@@ -1,0 +1,6 @@
+[task 10/27] tau=2  beta_trt=-1  confounding=medium (x1)
+  beta_init = int=-3.000, x1=0.800, x2=-0.300, L1=0.500, L2=0.400
+  site sizes = 200/800/2000; initiation intercepts = -4.5/-3/-1.5
+[task 10] truth: RD=-0.1592 RR=0.8125 OR=0.3955 RMSTd=3.8816
+[task 10] running 100 reps on 8 cores
+[task 10] wrote 4800 rows -> results/res_task_010.rds

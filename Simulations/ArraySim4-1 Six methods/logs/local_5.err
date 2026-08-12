@@ -1,0 +1,5 @@
+[task 5/27] tau=6  beta_trt=-0.7  confounding=small (x0.5)
+  beta_init = int=-3.000, x1=0.400, x2=-0.150, L1=0.250, L2=0.200
+[task 5] truth: RD=-0.0772 RR=0.9090 OR=0.6013 RMSTd=1.4493
+[task 5] running 100 reps on 8 cores
+[task 5] wrote 4800 rows -> results/res_task_005.rds
