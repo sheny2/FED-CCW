@@ -33,13 +33,13 @@ if (!identical(observed_tasks, expected_tasks)) {
 plot_estimands <- c("RD", "RR", "OR", "RMST_diff")
 method_levels <- c(
   "fed_ccw_tvipcw", "pooled_ccw_tvipcw",
-  "fed_ipw_no_clone", "fed_perprotocol_naive",
-  "fed_landmark_ipw", "local_ccw_meta"
+  "fed_landmark_ipw", "local_ccw_meta" ,
+  "fed_ipw_no_clone", "fed_perprotocol_naive"
 )
 method_labels <- c(
   "Federated CCW", "Pooled CCW",
-  "Federated IPW (no cloning)", "Federated per-protocol (unweighted)",
-  "Federated landmark IPW", "Local CCW + curve meta-analysis"
+  "Federated landmark IPW", "Local CCW + curve meta-analysis" ,
+  "Federated IPW (no cloning)", "Federated per-protocol (unweighted)"
 )
 method_colors <- c(
   "Federated CCW"                         = "#2c7fb8",

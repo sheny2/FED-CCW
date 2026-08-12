@@ -46,7 +46,8 @@ if (is.na(task_id) || task_id < 1) stop("Invalid task_id: ", task_id)
 # carries the scenario NAME so the multiplier and its label cannot drift
 # apart.
 grid <- expand.grid(
-  tau      = c(3, 6, 9),
+  # tau      = c(3, 6, 9),
+  tau      = c(5, 10, 15),
   beta_trt = c(-1.0, -0.7, -0.5),
   scenario = names(DEFAULT_CONF_MULTS),
   KEEP.OUT.ATTRS   = FALSE,
@@ -62,7 +63,7 @@ this <- grid[task_id, ]
 
 # ---- 2. settings shared across all replicates --------------------------
 SIM <- list(
-  n_reps     = 500,
+  n_reps     = 300,
   K          = 10,
   n_per_site = TEN_SITE_SIZES,
   init_intercepts = TEN_SITE_INIT_INTERCEPTS,
