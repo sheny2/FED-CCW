@@ -73,7 +73,7 @@ DEFAULT_CONF_MULTS <- c(small = 0.5, medium = 1.0, strong = 1.5)
 # ---- ten noisy local sites ----------------------------------------------
 # site nuisance models and ten completed local CCW curves. Treatment uptake
 # ranges smoothly from rare at site 1 to common at site 10.
-TEN_SITE_SIZES <- setNames(rep(300L, 10L), seq_len(10L))
+TEN_SITE_SIZES <- setNames(rep(100L, 10L), seq_len(10L))
 TEN_SITE_INIT_INTERCEPTS <- setNames(
   seq(-4.5, -1.5, length.out = 10L), seq_len(10L)
 )
