@@ -1,13 +1,32 @@
-# ArraySim4-3: Ten Small Sites
+# ArraySim4-3: Ten Small Sites (fixed)
 
-Finite-sample stress test of Fed-CCW versus completing CCW locally and
-averaging the ten resulting survival curves.
+Corrected finite-sample stress test of Fed-CCW versus completing CCW locally
+and averaging the ten resulting survival curves.
+
+This folder starts clean: it intentionally contains no simulation results,
+summary tables, plots, or completed logs from the original study. Those
+outputs were generated under a DGP that allowed treatment initiation and
+covariate evolution after a terminal event and must not be reused here.
+
+## DGP correction
+
+After a terminal event, a participant:
+
+- is no longer eligible to initiate treatment;
+- contributes no later treatment-initiation person-interval rows;
+- has no later time-varying covariates generated; and
+- cannot have `S` or `A_tau` changed by a post-event initiation.
+
+The observed-data estimator and the Monte Carlo oracle use the same event-free
+initiation risk-set definition. `validate_setup.R` explicitly checks that no
+participant initiates after the terminal event and that local initiation
+counts equal counts reconstructed directly from event-free risk sets.
 
 ## Site design
 
 - 10 sites
-- 100 patients per site
-- total sample size: 1,000 per replicate
+- 100/300 patients per site
+- total sample size: 1,000/3,000 per replicate
 - site-specific treatment-initiation intercepts evenly spaced from `-4.5`
   through `-1.5`
 - corresponding zero-covariate initiation probabilities range from about
@@ -17,11 +36,6 @@ averaging the ten resulting survival curves.
 All sites share the treatment-initiation covariate slopes, covariate-transition
 model, outcome model, and treatment effect. Confounding multipliers are small
 (`0.5`), medium (`1.0`), and strong (`1.5`).
-
-Dividing the same total sample across ten sites forces ten nuisance-model fits
-and ten completed local CCW curves. Unlike the previous unbalanced study,
-rare-treatment sites are not downweighted relative to the other sites: each
-local curve receives weight `0.10` in curve aggregation.
 
 ## Methods
 
@@ -37,9 +51,7 @@ Local CCW constructs ten curves first and then averages them. Both use the
 same common numerator and the same local denominator models.
 
 Landmark IPW targets post-landmark survival conditional on being event-free
-through `tau`; it does not target the same time-zero grace-period estimand as
-the other methods. Its comparison with the common CCW oracle therefore
-includes a target-population difference.
+through `tau`; it does not target the same time-zero grace-period estimand.
 
 ## Simulation grid
 
@@ -53,10 +65,9 @@ includes a target-population difference.
 - no weight truncation (`c(0, 1)`)
 - 14,400 rows per task: 300 replicates x 6 methods x 8 estimands
 
-The oracle allocates its 3,000,000 observations equally across the ten sites
-and uses the corresponding site initiation intercept for every observation.
+The oracle allocates its 3,000,000 observations equally across the ten sites.
 
-## Run
+## Validate, run, and aggregate
 
 From this directory:
 
@@ -65,8 +76,7 @@ Rscript validate_setup.R
 sbatch job.sh
 ```
 
-For a local run, execute array tasks sequentially and set the desired number
-of worker processes through `SLURM_CPUS_PER_TASK`:
+For a local run:
 
 ```bash
 for task_id in {1..27}; do
@@ -76,9 +86,8 @@ for task_id in {1..27}; do
 done
 ```
 
-`job.sh` requests 5 CPUs and 20 GB per task. The committed local results were
-run with 20 worker processes per task. No `submit.sh` wrapper is included, so
-the `logs/` and `results/` directories must exist before submission.
+`job.sh` requests 5 CPUs and 20 GB per task. No `submit.sh` wrapper is
+included, so `logs/` and `results/` must exist before submission.
 
 After all 27 tasks complete:
 
@@ -86,9 +95,6 @@ After all 27 tasks complete:
 Rscript aggregate.R
 ```
 
-The aggregation script requires all task IDs 1 through 27. It calculates RMSE
-from replicate-level errors before collapsing bias and writes
+Aggregation calculates RMSE from replicate-level errors and writes
 `summary_all_scenarios.csv` plus bias plots for RD, RR, OR, and RMST difference.
-
 Only federated CCW and pooled CCW report model-based confidence intervals.
-The other four methods report point estimates.
