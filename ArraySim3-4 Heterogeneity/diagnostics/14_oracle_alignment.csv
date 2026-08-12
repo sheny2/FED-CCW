@@ -1,0 +1,17 @@
+"method","estimand","estimate"
+"aggregated_true_weights_common_num","psi1",0.675210761808709
+"aggregated_true_weights_common_num","psi0",0.745992450472001
+"aggregated_true_weights_common_num","RD",-0.0707816886632923
+"aggregated_true_weights_common_num","RR",0.905117419595188
+"aggregated_true_weights_common_num","OR",0.707864149276618
+"aggregated_true_weights_common_num","RMST1",12.133786601054
+"aggregated_true_weights_common_num","RMST0",10.879778587118
+"aggregated_true_weights_common_num","RMST_diff",1.25400801393603
+"existing_site_average_oracle","psi1",0.673511193671433
+"existing_site_average_oracle","psi0",0.746875216231226
+"existing_site_average_oracle","RD",-0.0733640225597922
+"existing_site_average_oracle","RR",0.901772048442053
+"existing_site_average_oracle","OR",0.699138378854269
+"existing_site_average_oracle","RMST1",12.2509884723465
+"existing_site_average_oracle","RMST0",10.8763072650365
+"existing_site_average_oracle","RMST_diff",1.37468120730995

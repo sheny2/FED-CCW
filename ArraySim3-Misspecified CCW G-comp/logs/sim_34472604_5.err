@@ -1,0 +1,7 @@
+Loading R/4.3
+[grid] 81 combos = 3 tau x 3 beta x 3 scenario x 3 misspec; array must be 1-81
+[task 5/81] tau=5  beta_trt=-0.7  confounding=small (x0.4)  misspec=correct
+  beta_init = int=-3.000, x1=0.320, x2=-0.120, L1=0.200, L2=0.160
+[task 5] truth: RD=-0.0821 RR=0.9033 OR=0.5849 RMSTd=1.6156
+[task 5] running 10 reps on 12 cores
+slurmstepd: error: *** JOB 34472777 ON compute-110 CANCELLED AT 2026-07-27T12:03:55 ***

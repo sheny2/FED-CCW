@@ -1,0 +1,7 @@
+Loading R/4.3
+[grid] 27 combos = 3 tau x 3 beta x 3 scenario; array must be 1-27
+[task 21/27] tau=8  beta_trt=-1  confounding=strong (x2)
+  beta_init = int=-3.000, x1=1.600, x2=-0.600, L1=1.000, L2=0.800
+[task 21] truth: RD=-0.0954 RR=0.8876 OR=0.5446 RMSTd=1.8353
+[task 21] running 100 reps on 12 cores
+[task 21] wrote 4000 rows -> results/res_task_021.rds

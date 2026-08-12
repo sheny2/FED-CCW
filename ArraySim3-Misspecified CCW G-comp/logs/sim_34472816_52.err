@@ -1,0 +1,7 @@
+Loading R/4.3
+[grid] 81 combos = 3 tau x 3 beta x 3 scenario x 3 misspec; array must be 1-81
+[task 52/81] tau=2  beta_trt=-0.5  confounding=strong (x2)  misspec=no_tv
+  beta_init = int=-3.000, x1=1.600, x2=-0.600, L1=1.000, L2=0.800
+[task 52] truth: RD=-0.0679 RR=0.9199 OR=0.6349 RMSTd=1.8332
+[task 52] running 100 reps on 12 cores
+[task 52] wrote 1600 rows -> results/res_task_052.rds

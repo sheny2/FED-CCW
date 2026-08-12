@@ -1,0 +1,7 @@
+Loading R/4.3
+[grid] 54 combos = 3 tau x 3 beta x 3 scenario x 2 misspec; array must be 1-54 (files offset by 135)
+[task 50/54] tau=5  beta_trt=-0.7  confounding=strong (x2)  gcomp=lpm
+  beta_init = int=-3.000, x1=1.600, x2=-0.600, L1=1.000, L2=0.800
+[task 50] truth: RD=-0.0864 RR=0.8983 OR=0.5705 RMSTd=1.8935
+[task 50] running 100 reps on 12 cores
+[task 50 -> file 185] wrote 4800 rows -> results/res_task_185.rds

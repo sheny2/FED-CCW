@@ -1,0 +1,6 @@
+Loading R/4.3
+[task 23/27] tau=5  beta_trt=-0.7  confounding=strong (x2)
+  beta_init = int=-3.000, x1=1.600, x2=-0.600, L1=1.000, L2=0.800
+[task 23] truth: RD=-0.0864 RR=0.8983 OR=0.5705 RMSTd=1.8935
+[task 23] running 100 reps on 12 cores
+[task 23] wrote 4800 rows -> results/res_task_023.rds

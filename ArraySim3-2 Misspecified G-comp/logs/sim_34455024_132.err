@@ -1,0 +1,8 @@
+Unloading R/4.3
+Loading R/4.3
+[grid] 135 combos = 3 tau x 3 beta x 3 scenario x 5 misspec; array must be 1-135
+[task 132/135] tau=8  beta_trt=-0.7  confounding=strong (x2)  gcomp=nonlinear_L
+  beta_init = int=-3.000, x1=1.600, x2=-0.600, L1=1.000, L2=0.800
+[task 132] truth: RD=-0.0737 RR=0.9129 OR=0.6177 RMSTd=1.4986
+[task 132] running 100 reps on 12 cores
+[task 132] wrote 4800 rows -> results/res_task_132.rds
