@@ -135,8 +135,8 @@ plot_data <- results %>%
     ),
     initiation_f = factor(
       initiation_scenario, levels = c("low", "high"),
-      labels = c("Rare initiation (intercept -4.5)",
-                 "Common initiation (intercept -1.5)")
+      labels = c("Rare initiation",
+                 "Common initiation")
     )
   )
 

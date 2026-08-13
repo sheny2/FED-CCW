@@ -35,7 +35,7 @@ DEFAULT_SD_L <- 1.0
 DEFAULT_TRUNC <- c(0, 1)
 
 # Numerical guard for probabilities entering weight ratios.
-PROB_EPS <- 1e-6
+PROB_EPS <- 1e-8
 
 .clamp_prob <- function(p, eps = PROB_EPS) pmin(pmax(p, eps), 1 - eps)
 
@@ -70,13 +70,13 @@ DEFAULT_CONF_MULT <- 1.0
 
 # ---- ArraySim4-4 factorial design ----------------------------------------
 STUDY_K <- 10L
-SAMPLE_SIZE_LEVELS <- c(low = 100L, large = 1000L)  # patients per site
-INITIATION_LEVELS <- c(low = -4.5, high = -1.5)     # logit intercepts
-STUDY_TAUS <- c(5L, 10L, 15L)
+SAMPLE_SIZE_LEVELS <- c(low = 300L, large = 1000L)  # patients per site
+INITIATION_LEVELS <- c(low = -5, high = -1)     # logit intercepts
+STUDY_TAUS <- c(4L, 6L, 8L)
 STUDY_BETA_TRT <- -0.7
-STUDY_TSTAR <- 25L
-STUDY_N_REPS <- 300L
-STUDY_TRUTH_N <- 3e6
+STUDY_TSTAR <- 30L
+STUDY_N_REPS <- 300
+STUDY_TRUTH_N <- 5e6
 
 make_study_grid <- function() {
   expand.grid(
