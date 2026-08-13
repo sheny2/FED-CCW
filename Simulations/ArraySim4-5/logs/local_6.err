@@ -1,0 +1,5 @@
+[task 6/12] tau=8; sample=large (500/site, total N=5000); outcome=rare (event intercept=-7.0)
+  beta_trt=-0.7; confounding=medium (x1.0); initiation intercept=-3.0
+[task 6] truth: RD=-0.0297 RR=0.6461 OR=0.6258 RMSTd=0.3143
+[task 6] running 300 reps on 8 cores
+[task 6] wrote 14400 rows -> results/res_task_006.rds

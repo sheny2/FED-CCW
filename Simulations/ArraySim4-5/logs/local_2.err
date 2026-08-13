@@ -1,0 +1,5 @@
+[task 2/12] tau=6; sample=low (100/site, total N=1000); outcome=rare (event intercept=-7.0)
+  beta_trt=-0.7; confounding=medium (x1.0); initiation intercept=-3.0
+[task 2] truth: RD=-0.0335 RR=0.6104 OR=0.5889 RMSTd=0.3402
+[task 2] running 300 reps on 8 cores
+[task 2] wrote 14400 rows -> results/res_task_002.rds

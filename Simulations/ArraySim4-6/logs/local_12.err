@@ -1,0 +1,5 @@
+[task 12/12] tau=8; size=unbalanced (50/100/1350; total N=1500); patient mix=heterogeneous
+  target E[X1]=1.300; target P(X2=1)=0.660; beta_trt=-0.7; medium confounding; initiation intercept=-4.0
+[task 12] truth: RD=-0.0220 RR=0.9768 OR=0.6850 RMSTd=0.6339
+[task 12] running 100 reps on 8 cores
+[task 12] wrote 4800 rows -> results/res_task_012.rds
