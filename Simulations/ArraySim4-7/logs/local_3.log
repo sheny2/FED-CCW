@@ -1,0 +1,4 @@
+[task 3/8] 50_sites_x_100: K=50, n/site=100, total N=5000; initiation=moderate (intercept -2.5)
+[task 3] truth: RD=-0.0890, RMST difference=1.9276
+[task 3] running 300 reps on 20 cores
+[task 3] wrote 7200 rows -> results/res_task_003.rds

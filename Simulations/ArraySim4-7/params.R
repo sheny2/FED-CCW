@@ -12,7 +12,8 @@ DEFAULT_BETA_EVENT <- c(
 DEFAULT_BETA_INIT <- c(int = -4.5, x1 = 0, x2 = 0, L1 = 0, L2 = 0)
 DEFAULT_BETA_L <- c(int = 0, ar = 0.6, x1 = 0.3, x2 = 0.2)
 DEFAULT_SD_L <- 1
-DEFAULT_TRUNC <- c(0.01, 0.99)
+DEFAULT_TRUNC <- c(0.001, 0.999)
+# DEFAULT_TRUNC <- c(0, 1)
 PROB_EPS <- 1e-6
 
 .clamp_prob <- function(p, eps = PROB_EPS) pmin(pmax(p, eps), 1 - eps)
@@ -36,9 +37,10 @@ STUDY_TOTAL_N <- 5000L
 STUDY_BETA_TRT <- -0.7
 STUDY_CONF_MULT <- 0
 STUDY_N_REPS <- 300L
-STUDY_TRUTH_N <- 5e6
+STUDY_TRUTH_N <- 3e6
 STUDY_TRUTH_SEED <- 47001L
-STUDY_TRUNC <- c(0.01, 0.99)
+STUDY_TRUNC <- c(0.001, 0.999)
+# STUDY_TRUNC <- c(0, 1)
 
 # Holding total N fixed isolates data fragmentation across sites.
 FRAGMENTATION_LEVELS <- list(
@@ -49,7 +51,7 @@ FRAGMENTATION_LEVELS <- list(
 )
 
 INITIATION_LEVELS <- c(
-  moderate = -3.5,
+  moderate = -2.5,
   sparse = -4.5
 )
 

@@ -131,12 +131,12 @@ Key outputs are `summary_all_scenarios.csv`, `support_diagnostics.csv`,
 `bias_vs_empty_treated_support.png`.
 
 
-Local run code
+# Local run code
 Rscript validate_setup.R
 mkdir -p logs results
 
 for task_id in {1..8}; do
   echo "Starting task ${task_id}"
-  SLURM_CPUS_PER_TASK=4 Rscript run_sim_array.R "${task_id}" \
+  SLURM_CPUS_PER_TASK=20 Rscript run_sim_array.R "${task_id}" \
     2>&1 | tee "logs/local_${task_id}.log"
 done
