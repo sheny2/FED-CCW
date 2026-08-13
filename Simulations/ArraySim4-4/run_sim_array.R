@@ -40,7 +40,7 @@ SIM <- list(
   conf_mult = DEFAULT_CONF_MULT,
   beta_init = scale_confounding(DEFAULT_CONF_MULT),
   trunc = c(0, 1),
-  base_seed = 2026 + task_id * 10000,
+  base_seed = 2026 + task_id * 1000,
   truth_N = STUDY_TRUTH_N,
   truth_seed = 321,
   sample_size_scenario = this$sample_size_scenario,

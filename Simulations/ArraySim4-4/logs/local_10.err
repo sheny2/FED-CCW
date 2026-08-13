@@ -1,0 +1,5 @@
+[task 10/12] tau=4; sample=large (1000/site, total N=10000); initiation=high (intercept=-1.0, zero-covariate p=0.2689)
+  beta_trt=-0.7; confounding=medium (x1.0)
+[task 10] truth: RD=-0.0907 RR=0.8964 OR=0.5195 RMSTd=2.8435
+[task 10] running 300 reps on 20 cores
+[task 10] wrote 14400 rows -> results/res_task_010.rds
