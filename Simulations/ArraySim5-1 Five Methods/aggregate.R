@@ -89,7 +89,7 @@ if (length(unique(rep_counts$n)) == 1L)
   rep_note <- sprintf("%d reps/cell", unique(rep_counts$n))
 
 for (est in plot_estimands) {
-  d <- pdat %>% filter(estimand == est)
+  d <- pdat %>% filter(estimand == est) %>% mutate(etimand = ifelse(est == "RMST_diff", "RMST difference", est))
   p <- ggplot(d, aes(x = tau_f, y = bias, fill = method)) +
     geom_boxplot(
       outlier.size = 0.45, outlier.alpha = 0.45, alpha = 0.88,

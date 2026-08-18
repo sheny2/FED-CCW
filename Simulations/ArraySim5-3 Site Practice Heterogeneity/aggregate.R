@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 # Combine all ArraySim5-3 Site Practice Heterogeneity results.
-
+rm(list = ls())
 suppressPackageStartupMessages({
   library(ggplot2)
   library(dplyr)
@@ -71,14 +71,14 @@ pdat <- results %>%
     heterogeneity_f = factor(
       practice_heterogeneity, levels = heterogeneity_levels,
       labels = paste(tools::toTitleCase(heterogeneity_levels),
-                     "site-practice heterogeneity")
+                     "site heterogeneity")
     ),
     beta_f = factor(
       beta_trt,
       levels = sort(unique(beta_trt)),
       labels = sprintf("beta[trt] == %.1f", sort(unique(beta_trt)))
     )
-  )
+  ) 
 
 rep_counts <- pdat %>%
   count(estimand, method, tau, practice_heterogeneity, beta_trt)
@@ -90,7 +90,7 @@ if (length(unique(rep_counts$n)) == 1L)
   rep_note <- sprintf("%d reps/cell", unique(rep_counts$n))
 
 for (est in plot_estimands) {
-  d <- pdat %>% filter(estimand == est)
+  d <- pdat %>% filter(estimand == est) %>% mutate(etimand = ifelse(est == "RMST_diff", "RMST difference", est))
   p <- ggplot(d, aes(x = tau_f, y = bias, fill = method)) +
     geom_boxplot(
       outlier.size = 0.45, outlier.alpha = 0.45, alpha = 0.88,
@@ -106,7 +106,7 @@ for (est in plot_estimands) {
     scale_fill_manual(values = method_colors, drop = FALSE) +
     scale_x_discrete(labels = tau_labels) +
     labs(
-      title = paste0("Estimation performance: ", est),
+      title = paste0("Estimation performance: ", d$etimand[1]),
       subtitle = paste0(
         length(DEFAULT_SITE_SIZES), " sites × ",
         if (length(unique(DEFAULT_SITE_SIZES)) == 1L) {
@@ -119,8 +119,8 @@ for (est in plot_estimands) {
         "; follow-up horizon = ", SIM_TSTAR
       ),
       x = expression("Grace period"~(tau)),
-      y = "Bias", fill = "Method",
-      caption = expression("Columns show treatment-effect coefficient "~beta[trt]~"; rows show site-practice heterogeneity.")
+      y = "Bias", fill = "Method"
+      # caption = expression("Columns show treatment-effect coefficient "~beta[trt]~"; rows show site-practice heterogeneity.")
     ) +
     theme_bw(base_size = 12) +
     theme(

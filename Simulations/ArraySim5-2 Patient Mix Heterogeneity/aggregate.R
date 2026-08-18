@@ -71,7 +71,7 @@ pdat <- results %>%
     heterogeneity_f = factor(
       heterogeneity, levels = heterogeneity_levels,
       labels = paste(tools::toTitleCase(heterogeneity_levels),
-                     "patient-mix heterogeneity")
+                     "patient heterogeneity")
     ),
     beta_f = factor(
       beta_trt,
@@ -90,7 +90,7 @@ if (length(unique(rep_counts$n)) == 1L)
   rep_note <- sprintf("%d reps/cell", unique(rep_counts$n))
 
 for (est in plot_estimands) {
-  d <- pdat %>% filter(estimand == est)
+  d <- pdat %>% filter(estimand == est) %>% mutate(etimand = ifelse(est == "RMST_diff", "RMST difference", est))
   p <- ggplot(d, aes(x = tau_f, y = bias, fill = method)) +
     geom_boxplot(
       outlier.size = 0.45, outlier.alpha = 0.45, alpha = 0.88,
@@ -119,8 +119,8 @@ for (est in plot_estimands) {
         "; follow-up horizon = ", SIM_TSTAR
       ),
       x = expression("Grace period"~(tau)),
-      y = "Bias", fill = "Method",
-      caption = expression("Columns show treatment-effect coefficient "~beta[trt]~"; rows show patient-mix heterogeneity.")
+      y = "Bias", fill = "Method"
+      # caption = expression("Columns show treatment-effect coefficient "~beta[trt]~"; rows show patient-mix heterogeneity.")
     ) +
     theme_bw(base_size = 12) +
     theme(
