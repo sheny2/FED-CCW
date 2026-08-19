@@ -34,13 +34,15 @@ if (!identical(observed_tasks, expected_tasks)) {
 
 plot_estimands <- c("RD", "RR", "OR", "RMST_diff")
 method_levels <- c(
-  "fed_ccw_tvipcw", "pooled_ccw_site_stratified",
+  "fed_ccw_tvipcw", 
+  "pooled_ccw_site_stratified",
   "pooled_ccw_site_fe",
   "fed_landmark_ipw",
   "fed_ipw_no_clone", "fed_perprotocol_naive"
 )
 method_labels <- c(
-  "Federated CCW", "Pooled CCW (site-stratified)",
+  "Federated CCW", 
+  "Pooled CCW (site-stratified)",
   "Pooled CCW (site FE, shared slopes)",
   "Federated landmark IPW",
   "Federated IPW (no cloning)", "Federated per-protocol (unweighted)"
@@ -94,6 +96,9 @@ if (length(unique(rep_counts$n)) == 1L)
 
 for (est in plot_estimands) {
   d <- pdat %>% filter(estimand == est) %>% mutate(etimand = ifelse(est == "RMST_diff", "RMST difference", est))
+  
+  d <- d %>% filter(method != "Pooled CCW (site-stratified)")
+  
   p <- ggplot(d, aes(x = tau_f, y = bias, fill = method)) +
     geom_boxplot(
       outlier.size = 0.45, outlier.alpha = 0.45, alpha = 0.88,

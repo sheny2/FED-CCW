@@ -91,3 +91,17 @@ Rscript aggregate.R
 
 There is no separate submission script. All settings are defined in
 `params.R`.
+
+
+Local run
+
+```bash
+n_tasks=$(Rscript -e 'source("params.R"); cat(nrow(simulation_grid()))')
+for task_id in $(seq 1 "$n_tasks"); do
+  SLURM_CPUS_PER_TASK=20 Rscript run_sim_array.R "$task_id" \
+    > "logs/local_${task_id}.out" \
+    2> "logs/local_${task_id}.err"
+done
+
+Rscript aggregate.R
+```

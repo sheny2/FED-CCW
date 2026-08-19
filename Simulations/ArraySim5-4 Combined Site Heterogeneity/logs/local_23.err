@@ -1,0 +1,7 @@
+[task 23/27] tau=10  beta_trt=-0.7  combined heterogeneity=high
+  beta_init = int=-3.000, x1=0.800, x2=-0.300, L1=0.500, L2=0.400
+  site sizes = 400/600/800/1200/2000; initiation intercepts = -4.5/-3.75/-3/-2.25/-1.5
+  patient mix: site 1: X1~N(-1.500, 0.700^2), P(X2=1)=0.100; site 2: X1~N(-0.750, 0.850^2), P(X2=1)=0.250; site 3: X1~N(0.000, 1.000^2), P(X2=1)=0.400; site 4: X1~N(0.750, 1.150^2), P(X2=1)=0.550; site 5: X1~N(1.500, 1.300^2), P(X2=1)=0.700
+[task 23] truth: RD=-0.0500 RR=0.9422 OR=0.6866 RMSTd=1.2004
+[task 23] running 500 reps on 20 cores
+[task 23] wrote 24000 rows -> results/res_task_023.rds

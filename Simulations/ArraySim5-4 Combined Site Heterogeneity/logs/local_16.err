@@ -1,0 +1,7 @@
+[task 16/27] tau=5  beta_trt=-0.5  combined heterogeneity=moderate
+  beta_init = int=-3.000, x1=0.800, x2=-0.300, L1=0.500, L2=0.400
+  site sizes = 600/800/1000/1200/1400; initiation intercepts = -3.75/-3.375/-3/-2.625/-2.25
+  patient mix: site 1: X1~N(-0.750, 0.850^2), P(X2=1)=0.200; site 2: X1~N(-0.375, 0.925^2), P(X2=1)=0.300; site 3: X1~N(0.000, 1.000^2), P(X2=1)=0.400; site 4: X1~N(0.375, 1.075^2), P(X2=1)=0.500; site 5: X1~N(0.750, 1.150^2), P(X2=1)=0.600
+[task 16] truth: RD=-0.0513 RR=0.9398 OR=0.6966 RMSTd=1.1198
+[task 16] running 500 reps on 20 cores
+[task 16] wrote 24000 rows -> results/res_task_016.rds
