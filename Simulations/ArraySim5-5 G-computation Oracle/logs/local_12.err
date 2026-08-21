@@ -1,0 +1,8 @@
+[task 12/27] tau=15  beta_trt=-1  combined heterogeneity=moderate
+  beta_init = int=-3.000, x1=0.800, x2=-0.300, L1=0.500, L2=0.400
+  site sizes = 600/800/1000/1200/1400; initiation intercepts = -3.75/-3.375/-3/-2.625/-2.25
+  patient mix: site 1: X1~N(-0.750, 0.850^2), P(X2=1)=0.200; site 2: X1~N(-0.375, 0.925^2), P(X2=1)=0.300; site 3: X1~N(0.000, 1.000^2), P(X2=1)=0.400; site 4: X1~N(0.375, 1.075^2), P(X2=1)=0.500; site 5: X1~N(0.750, 1.150^2), P(X2=1)=0.600
+  oracle = parametric Monte Carlo g-computation; g1 follows true initiation before tau and is forced at tau; g0 withholds treatment
+[task 12] truth: RD=-0.0741 RR=0.9131 OR=0.6073 RMSTd=1.4608
+[task 12] running 3 reps on 8 cores
+[task 12] wrote 120 rows -> results/res_task_012.rds

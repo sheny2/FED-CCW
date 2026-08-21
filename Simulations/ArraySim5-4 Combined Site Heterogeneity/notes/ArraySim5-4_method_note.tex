@@ -1,0 +1,479 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+\newcommand{\expit}{\operatorname{expit}}
+\newcommand{\ind}{\mathbb{I}}
+\newcommand{\Prb}{\operatorname{Pr}}
+\newcommand{\RMST}{\operatorname{RMST}}
+
+\title{Combined Site Heterogeneity\\
+Simulation \& Method Note}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Purpose}
+
+This simulation evaluates federated clone--censor--weight (Fed-CCW) estimation
+under three sources of between-site heterogeneity occurring simultaneously:
+\begin{enumerate}[leftmargin=2em]
+  \item unbalanced site sample sizes;
+  \item different site-specific distributions of measured baseline
+        covariates;
+  \item different site treatment-initiation practices after
+        conditioning on measured patient history.
+\end{enumerate}
+Each low, moderate, or high scenario specifies all three components jointly.
+The total sample size remains 5,000, but site sizes become increasingly unequal. 
+Patient-mix separation and initiation practice separation increase at the same time.
+
+The simulation mainly compares Fed-CCW with two pooled CCW implementations (along with some additional naive methods). 
+The first pooled implementation uses fully site-stratified nuisance models and is thus mathematically aligned with Fed-CCW. 
+The second uses a conventional pooled logistic initiation model with site fixed effects and one common covariate slope vector, thereby borrowing information across sites.
+
+
+\section{Indices, observed data, and simulation grid}
+
+Sites are indexed by $k\in\{1,\ldots,5\}$, patients by $i$, and discrete
+follow-up intervals by $m=1,\ldots,M$, where $M=25$. For patient $i$ at site
+$k$, let
+\begin{itemize}[leftmargin=2em]
+  \item $X_{1ik}$ and $X_{2ik}$ denote baseline covariates;
+  \item $L_{1ikm}$ and $L_{2ikm}$ denote time-varying covariates;
+  \item $S_{ik}$ denote the treatment-initiation interval;
+  \item $T_{ik}$ denote the terminal-event interval; and
+  \item $A_{ik}^{\tau}=\ind(S_{ik}\leq\tau)$ indicate initiation within the
+        grace period.
+\end{itemize}
+If initiation or the event does not occur during follow-up, its time is coded
+as $M+1$.
+
+The simulation grid is
+\[
+  \tau\in\{5,10,15\},\qquad
+  \beta_{\mathrm{trt}}\in\{-1.0,-0.7,-0.5\},\qquad
+  h\in\{\text{low},\text{moderate},\text{high}\},
+\]
+giving $3\times3\times3=27$ array tasks. 
+
+\section{Joint site-heterogeneity settings}
+
+For heterogeneity level $h$, define
+\[
+  \mathcal G_h
+  =\left\{n_{kh},\mu_{kh},\sigma_{kh},p_{kh},\alpha_{kh}:
+            k=1,\ldots,5\right\},
+\]
+where $n_{kh}$ is site size, $X_1\sim N(\mu_{kh},\sigma_{kh}^2)$,
+$X_2\sim\operatorname{Bernoulli}(p_{kh})$, and $\alpha_{kh}$ is the
+site-specific treatment-initiation intercept.
+
+\begin{table}[ht]
+\centering
+\small
+\caption{Combined site-heterogeneity settings.}
+\begin{tabular}{llrrrr}
+\toprule
+Level & Site & $n_{kh}$ & $X_1$ distribution & $X_2$ probability & $\alpha_{kh}$ \\
+\midrule
+Low & 1 & 900  & $N(-0.250,0.950^2)$ & 0.350 & $-3.250$ \\
+    & 2 & 950  & $N(-0.125,0.975^2)$ & 0.375 & $-3.125$ \\
+    & 3 & 1000 & $N(0,1^2)$          & 0.400 & $-3.000$ \\
+    & 4 & 1050 & $N(0.125,1.025^2)$  & 0.425 & $-2.875$ \\
+    & 5 & 1100 & $N(0.250,1.050^2)$  & 0.450 & $-2.750$ \\
+\addlinespace
+Moderate & 1 & 600  & $N(-0.750,0.850^2)$ & 0.200 & $-3.750$ \\
+         & 2 & 800  & $N(-0.375,0.925^2)$ & 0.300 & $-3.375$ \\
+         & 3 & 1000 & $N(0,1^2)$          & 0.400 & $-3.000$ \\
+         & 4 & 1200 & $N(0.375,1.075^2)$  & 0.500 & $-2.625$ \\
+         & 5 & 1400 & $N(0.750,1.150^2)$  & 0.600 & $-2.250$ \\
+\addlinespace
+High & 1 & 400  & $N(-1.500,0.700^2)$ & 0.100 & $-4.500$ \\
+     & 2 & 600  & $N(-0.750,0.850^2)$ & 0.250 & $-3.750$ \\
+     & 3 & 800  & $N(0,1^2)$          & 0.400 & $-3.000$ \\
+     & 4 & 1200 & $N(0.750,1.150^2)$  & 0.550 & $-2.250$ \\
+     & 5 & 2000 & $N(1.500,1.300^2)$  & 0.700 & $-1.500$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+For every level,
+\[
+  \sum_{k=1}^5 n_{kh}=5000.
+\]
+The maximum-to-minimum site-size ratios are approximately 1.22, 2.33, and
+5.00 for the low, moderate, and high levels. The $X_1$ mean ranges are 0.5,
+1.5, and 3.0; the $X_2$ probability ranges are 0.1, 0.4, and 0.6; and the
+initiation-intercept ranges are 0.5, 1.5, and 3.0.
+
+The gradients are intentionally aligned. Larger sites tend to enroll patients
+with larger $X$ values and have higher residual initiation propensity. 
+% Thus, high heterogeneity is a joint stress test rather than three independent one-factor perturbations.
+
+\section{Data-generating process}
+
+\subsection{Baseline covariates}
+
+At level $h$, site $k$ generates
+\[
+  X_{1ik}\sim N(\mu_{kh},\sigma_{kh}^2),
+  \qquad
+  X_{2ik}\sim\operatorname{Bernoulli}(p_{kh}).
+\]
+Because $n_{kh}$ also varies, the marginal target-population patient mix is
+the size-weighted five-site mixture rather than an equally weighted mixture.
+
+\subsection{Time-varying covariates}
+
+For $\ell\in\{1,2\}$,
+\begin{equation}
+\label{eq:L-dgp}
+  L_{\ell,ikm}
+  =0.6L_{\ell,ik,m-1}
+   +0.3X_{1ik}
+   +0.2X_{2ik}
+   +\varepsilon_{\ell,ikm},
+  \qquad
+  \varepsilon_{\ell,ikm}\sim N(0,1),
+\end{equation}
+with $L_{\ell,ik0}=0$. Treatment does not affect subsequent $L$. Covariates
+are generated only while the patient remains alive.
+
+\subsection{Treatment initiation}
+
+Among patients alive and untreated at the beginning of interval $m$, define
+\[
+  q_{ikm}
+  =\Prb(S_{ik}=m\mid S_{ik}\geq m,T_{ik}\geq m,
+                         X_{ik},L_{ikm},K_i=k).
+\]
+The initiation DGP is
+\begin{equation}
+\label{eq:init-dgp}
+  \operatorname{logit}(q_{ikm})
+  =\alpha_{kh}
+   +0.8X_{1ik}
+   -0.3X_{2ik}
+   +0.5L_{1ikm}
+   +0.4L_{2ikm}.
+\end{equation}
+The covariate slopes are common across sites and heterogeneity levels. Only
+the site intercept $\alpha_{kh}$ changes. Consequently, two patients with the
+same measured history can have different initiation probabilities because
+they receive care at different sites.
+
+\subsection{Terminal-event process}
+
+Conditional on being alive at interval $m$, the event hazard is
+\begin{align}
+\label{eq:event-dgp}
+  \operatorname{logit}
+  \Prb(T_{ik}=m\mid T_{ik}\geq m,\mathcal H_{ikm})
+  ={}&-2.5+0.5X_{1ik}+0.4X_{2ik} \notag\\
+     &+0.4L_{1ikm}+0.3L_{2ikm}
+      +0.2L_{1ik,m-1}+0.15L_{2ik,m-1} \notag\\
+     &+\beta_{\mathrm{trt}}
+       \ind(S_{ik}\leq\tau,m\geq S_{ik}).
+\end{align}
+Treatment affects the event hazard only if initiation occurs within the grace period. 
+There is no additional direct site term in the event model. 
+Site heterogeneity influences the marginal outcome distribution through patient mix and treatment initiation, 
+not through an independent site outcome effect (so no treatment heterogeneity induced by site).
+
+\medskip
+
+Within each interval, the simulation generates current $L$, then treatment
+initiation, and then the event. A patient may initiate and experience the event
+in the same interval. Initiation and covariate evolution stop after death.
+
+\section{Strategies, cloning, and artificial censoring}
+
+The two strategies are
+\begin{align*}
+  g=1:&\quad \text{initiate treatment within the grace period},\\
+  g=0:&\quad \text{do not initiate treatment within the grace period}.
+\end{align*}
+For the $g=1$ clone,
+\[
+  C^1_{ik}
+  =\begin{cases}
+      M+1, & S_{ik}\leq\tau,\\
+      \tau-1, & S_{ik}>\tau.
+    \end{cases}
+\]
+For the $g=0$ clone,
+\[
+  C^0_{ik}
+  =\begin{cases}
+      S_{ik}-1, & S_{ik}\leq\tau,\\
+      M+1, & S_{ik}>\tau.
+    \end{cases}
+\]
+Deviation occurs during the interval that triggers artificial censoring, so
+the clone is retained only through the preceding interval.
+
+\section{Oracle truth}
+
+\subsection{Oracle target population}
+
+For each $(\tau,\beta_{\mathrm{trt}},h)$ cell, the oracle simulates
+$N_{\mathrm{oracle}}=3{,}000{,}000$ observations. Its site proportions match
+the finite-sample target population:
+\begin{equation}
+\label{eq:site-weight}
+  \pi_{kh}=\frac{n_{kh}}{\sum_{j=1}^5 n_{jh}}
+           =\frac{n_{kh}}{5000}.
+\end{equation}
+Therefore, the oracle changes with the heterogeneity level not only because
+the site-specific DGP changes, but also because the target-population site
+mixture changes.
+
+\subsection{Oracle denominator and common numerator}
+
+The oracle uses the true initiation probability
+\[
+  q_{ikm}^{D,\mathrm{true}}
+  =\expit\!\left(
+      \alpha_{kh}+0.8X_{1ik}-0.3X_{2ik}
+      +0.5L_{1ikm}+0.4L_{2ikm}
+    \right).
+\]
+Its common marginal numerator hazard is
+\begin{equation}
+\label{eq:oracle-num}
+  q_m^{N,\mathrm{oracle}}
+  =\frac{
+      \sum_{k=1}^5\sum_i
+      \ind(S_{ik}=m,T_{ik}\geq m)
+    }{
+      \sum_{k=1}^5\sum_i
+      \ind(S_{ik}\geq m,T_{ik}\geq m)
+    }.
+\end{equation}
+This numerator automatically reflects unequal site sizes, different patient
+mixes, and different initiation practices.
+
+\subsection{Oracle weights and survival}
+
+Writing $q_m^N=q_m^{N,\mathrm{oracle}}$ and
+$q_{ikm}^D=q_{ikm}^{D,\mathrm{true}}$, the waiting and initiation factors are
+\[
+  r^{\mathrm{wait}}_{ikm}
+  =\frac{1-q_m^N}{1-q_{ikm}^D},
+  \qquad
+  r^{\mathrm{init}}_{ikm}
+  =\frac{q_m^N}{q_{ikm}^D}.
+\]
+The initiate-within-$\tau$ weight is
+\begin{equation}
+\label{eq:w1}
+  W^1_{ikm}
+  =\prod_{j=1}^{\min(m,\tau)}
+    \left\{
+      \left(\frac{q_j^N}{q_{ikj}^D}\right)^{\ind(S_{ik}=j)}
+      \left(\frac{1-q_j^N}{1-q_{ikj}^D}\right)^{\ind(S_{ik}>j)}
+    \right\},
+\end{equation}
+while the do-not-initiate weight is
+\begin{equation}
+\label{eq:w0}
+  W^0_{ikm}
+  =\prod_{j=1}^{\min(m,\tau,S_{ik}-1)}
+     \frac{1-q_j^N}{1-q_{ikj}^D}.
+\end{equation}
+Factors are evaluated only while the patient remains eligible. After $\tau$,
+the weights are carried forward. The current setting uses no effective weight
+truncation.
+
+For strategy $g$, define
+\[
+  R^g_{ikm}=\ind(T_{ik}>m-1,C^g_{ik}>m-1)
+\]
+and
+\[
+  D^g_{ikm}=\ind(R^g_{ikm}=1,T_{ik}=m,T_{ik}\leq C^g_{ik}).
+\]
+The oracle hazard and survival curve are
+\[
+  \lambda_m^{g,\mathrm{oracle}}
+  =\frac{\sum_{k,i}W^g_{ikm}D^g_{ikm}}
+         {\sum_{k,i}W^g_{ikm}R^g_{ikm}},
+  \qquad
+  S^{g,\mathrm{oracle}}(m)
+  =\prod_{j=1}^m(1-\lambda_j^{g,\mathrm{oracle}}).
+\]
+
+At $M=25$,
+\[
+  \psi_g=1-S^g(M),
+  \qquad
+  \RMST_g=\sum_{m=0}^{M-1}S^g(m).
+\]
+The reported contrasts are
+\[
+  \mathrm{RD}=\psi_1-\psi_0,
+  \qquad
+  \mathrm{RR}=\frac{\psi_1}{\psi_0},
+\]
+\[
+  \mathrm{OR}
+  =\frac{\psi_1/(1-\psi_1)}{\psi_0/(1-\psi_0)},
+  \qquad
+  \RMST_{\mathrm{diff}}=\RMST_1-\RMST_0.
+\]
+
+\section{Federated CCW}
+
+\subsection{Local denominator nuisance models}
+
+Each site constructs its own eligible person-interval dataset and fits
+\begin{align}
+\label{eq:local-den}
+  \operatorname{logit}(\widehat q^{D,\mathrm{local}}_{ikm})
+  ={}&\widehat\gamma_{km}
+      +\widehat\beta_{1k}X_{1ik}
+      +\widehat\beta_{2k}X_{2ik}
+      +\widehat\beta_{3k}L_{1ikm}
+      +\widehat\beta_{4k}L_{2ikm} \notag\\
+     &+\widehat\beta_{5k}L_{1ik,m-1}
+      +\widehat\beta_{6k}L_{2ik,m-1}.
+\end{align}
+The interval effect $\widehat\gamma_{km}$ is represented by a factor for
+$m$. Every coefficient is estimated separately within site $k$. Thus,
+Fed-CCW does not borrow nuisance regression coefficients across sites. This
+model is more flexible than the DGP because it permits site-specific slopes
+and includes lagged $L$ in the initiation model.
+
+\subsection{Common numerator and central estimation}
+
+Site $k$ releases
+\[
+  N^{\mathrm{init}}_{km}
+  =\sum_i\ind(S_{ik}=m,T_{ik}\geq m),
+  \qquad
+  N^{\mathrm{eligible}}_{km}
+  =\sum_i\ind(S_{ik}\geq m,T_{ik}\geq m).
+\]
+The center computes and broadcasts
+\begin{equation}
+\label{eq:fed-num}
+  \widehat q_m^N
+  =\frac{\sum_kN^{\mathrm{init}}_{km}}
+         {\sum_kN^{\mathrm{eligible}}_{km}}.
+\end{equation}
+Each site then constructs the strategy weights using its local denominator and
+the common numerator. It releases weighted event and risk totals
+\[
+  DW^g_{km}=\sum_iW^g_{ikm}D^g_{ikm},
+  \qquad
+  RW^g_{km}=\sum_iW^g_{ikm}R^g_{ikm}.
+\]
+The central hazard is
+\begin{equation}
+\label{eq:fed-hazard}
+  \widehat\lambda_m^{g,\mathrm{fed}}
+  =\frac{\sum_kDW^g_{km}}{\sum_kRW^g_{km}},
+\end{equation}
+followed by
+\[
+  \widehat S^{g,\mathrm{fed}}(m)
+  =\prod_{j=1}^m(1-\widehat\lambda_j^{g,\mathrm{fed}}).
+\]
+This gives one pooled weighted survival curve, and thus RMST, RD, RR, and OR estimates, for each strategy. 
+
+For uncertainty estimation, global hazards and risk totals are returned to
+the sites. Sites calculate local individual influence contributions and
+release sums of squares. The implemented model-based variance treats the
+estimated weights as fixed and does not add nuisance-model estimation
+uncertainty.
+
+\section{Pooled CCW with site-stratified nuisance models}
+
+The aligned pooled estimator has all individual records centrally but fits
+Equation~\eqref{eq:local-den} separately within each site. It uses the same
+common numerator, artificial censoring, weight construction, weighted survival
+estimator, and influence-function calculation as Fed-CCW.
+
+Its pooled weighted hazard is
+\[
+  \widehat\lambda_m^{g,\mathrm{strat}}
+  =\frac{\sum_k\sum_iW^g_{ikm}D^g_{ikm}}
+         {\sum_k\sum_iW^g_{ikm}R^g_{ikm}}.
+\]
+Since the local sufficient statistics satisfy
+\[
+  DW^g_{km}=\sum_iW^g_{ikm}D^g_{ikm},
+  \qquad
+  RW^g_{km}=\sum_iW^g_{ikm}R^g_{ikm},
+\]
+we have
+\[
+  \widehat\lambda_m^{g,\mathrm{strat}}
+  =\widehat\lambda_m^{g,\mathrm{fed}}.
+\]
+Therefore, Fed-CCW and site-stratified pooled CCW have identical survival
+curves, treatment-effect estimates, and currently implemented model-based
+standard errors up to numerical precision. This comparison verifies lossless
+federation for the fully local nuisance-model specification.
+
+\section{Pooled CCW with site fixed effects}
+
+The second, more conventional, pooled estimator fits one logistic initiation model to all pooled
+person-interval records:
+\begin{align}
+\label{eq:pooled-fe}
+  \operatorname{logit}(\widehat q^{D,\mathrm{FE}}_{ikm})
+  ={}&\widehat\gamma_m+\widehat\delta_k
+      +\widehat\beta_1X_{1ik}+\widehat\beta_2X_{2ik} \notag\\
+     &+\widehat\beta_3L_{1ikm}+\widehat\beta_4L_{2ikm}
+      +\widehat\beta_5L_{1ik,m-1}
+      +\widehat\beta_6L_{2ik,m-1}.
+\end{align}
+Here, $\widehat\gamma_m$ is a common interval effect,
+$\widehat\delta_k$ is a site fixed effect, and the $\widehat\beta$ vector is
+shared across sites. The model therefore permits residual differences in site
+initiation propensity while borrowing information across sites for the
+effects of patient history.
+
+The common-slope restriction in Equation~\eqref{eq:pooled-fe} is correct under
+the DGP, because Equation~\eqref{eq:init-dgp} uses common covariate
+slopes and site-specific intercepts. The pooled fixed-effect model may
+therefore produce more stable nuisance estimates and weights, particularly at
+small sites. However, it is not the same statistical estimator as Fed-CCW's
+fully local nuisance-model approach.
+
+After fitting Equation~\eqref{eq:pooled-fe}, this estimator uses the same
+common numerator and clone-censor-weight construction. Its hazard is
+\[
+  \widehat\lambda_m^{g,\mathrm{FE}}
+  =\frac{\sum_{k,i}W^{g,\mathrm{FE}}_{ikm}D^g_{ikm}}
+         {\sum_{k,i}W^{g,\mathrm{FE}}_{ikm}R^g_{ikm}}.
+\]
+Because $W^{g,\mathrm{FE}}_{ikm}$ generally differs from the locally estimated
+Fed-CCW weight, this estimator need not equal Fed-CCW in finite samples. Any
+efficiency advantage reflects the additional common-slope assumption and
+cross-site information borrowing, not merely centralized data access.
+
+\section{Other comparison methods}
+
+The simulation also includes:
+\begin{enumerate}[leftmargin=2em]
+  \item federated IPW without cloning;
+  \item federated unweighted per-protocol analysis; and
+  \item federated landmark IPW.
+\end{enumerate}
+Together with the three CCW implementations, this gives six methods and eight
+reported estimands per method: $\psi_1$, $\psi_0$, RD, RR, OR, $\RMST_1$,
+$\RMST_0$, and $\RMST_{\mathrm{diff}}$.
+
+
+
+\end{document}

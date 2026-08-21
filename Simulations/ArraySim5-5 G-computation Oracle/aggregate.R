@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# Combine all ArraySim5-4 Combined Site Heterogeneity results.
+# Combine all ArraySim5-5 G-computation Oracle results.
 rm(list = ls())
 suppressPackageStartupMessages({
   library(ggplot2)
@@ -35,21 +35,18 @@ if (!identical(observed_tasks, expected_tasks)) {
 plot_estimands <- c("RD", "RR", "OR", "RMST_diff")
 method_levels <- c(
   "fed_ccw_tvipcw", 
-  "pooled_ccw_site_stratified",
   "pooled_ccw_site_fe",
   "fed_landmark_ipw",
   "fed_ipw_no_clone", "fed_perprotocol_naive"
 )
 method_labels <- c(
   "Federated CCW", 
-  "Pooled CCW (site-stratified)",
   "Pooled CCW (site FE, shared slopes)",
   "Federated landmark IPW",
   "Federated IPW (no cloning)", "Federated per-protocol (unweighted)"
 )
 method_colors <- c(
   "Federated CCW"                       = "#0072B2",
-  "Pooled CCW (site-stratified)"        = "#56B4E9",
   "Pooled CCW (site FE, shared slopes)" = "#009E73",
   "Federated IPW (no cloning)"          = "#E69F00",
   "Federated per-protocol (unweighted)" = "#D55E00",
@@ -118,7 +115,7 @@ for (est in plot_estimands) {
       subtitle = paste0(
         length(DEFAULT_SITE_SIZES), " sites; total N = 5,000; ",
         "site size, patient mix, and initiation practice vary jointly; ",
-        "follow-up horizon = ", SIM_TSTAR
+        "g-computation oracle; follow-up horizon = ", SIM_TSTAR
       ),
       x = expression("Grace period"~(tau)),
       y = "Bias", fill = "Method"
